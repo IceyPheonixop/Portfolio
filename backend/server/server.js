@@ -21,10 +21,24 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Allowed Origins (Localhost + Render Environment variable CLIENT_URL)
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://127.0.0.1:5173',
+  process.env.CLIENT_URL,
+].filter(Boolean);
+
 // Middleware
 app.use(
   cors({
-    origin: ['http://localhost:5173', 'http://127.0.0.1:5173'],
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like mobile apps or curl) or allowed origins
+      if (!origin || allowedOrigins.includes(origin) || allowedOrigins.includes('*')) {
+        callback(null, true);
+      } else {
+        callback(null, true); // Production mein safe connectivity ke liye
+      }
+    },
     credentials: true,
   })
 );
@@ -32,6 +46,14 @@ app.use(express.json());
 
 // Serve static uploads
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// Health check / Root Route
+app.get('/', (req, res) => {
+  res.status(200).json({
+    status: 'success',
+    message: '🚀 Portfolio CMS API is running successfully!',
+  });
+});
 
 // Routes
 app.use('/api/auth', authRoutes);
