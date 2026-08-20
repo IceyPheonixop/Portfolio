@@ -1,0 +1,1 @@
+export default function Loader({ text = 'Loading…' }) { return <div className="py-20 text-center text-zinc-400"><span className="mx-auto mb-3 block h-7 w-7 animate-spin rounded-full border-2 border-lime border-t-transparent" />{text}</div>; }

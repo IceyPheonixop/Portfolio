@@ -1,0 +1,2 @@
+import { Router } from 'express'; import rateLimit from 'express-rate-limit'; import { login, logout, me } from '../controllers/authController.js'; import { protect } from '../middleware/auth.js';
+const router = Router(); const limiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 10, standardHeaders: true, legacyHeaders: false, message: { message: 'Too many attempts. Try again later.' } }); router.post('/login', limiter, login); router.post('/logout', logout); router.get('/me', protect, me); export default router;

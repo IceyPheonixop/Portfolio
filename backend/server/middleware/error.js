@@ -1,0 +1,2 @@
+export function notFound(req, res) { res.status(404).json({ message: 'This resource was not found.' }); }
+export function errorHandler(err, req, res, next) { console.error(err); if (err.name === 'ValidationError') return res.status(400).json({ message: 'Please check the submitted information.' }); if (err.code === 11000) return res.status(409).json({ message: 'That value is already in use.' }); res.status(err.status || 500).json({ message: 'Something went wrong. Please try again.' }); }
